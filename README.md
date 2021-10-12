@@ -1,4 +1,4 @@
-Kapcsolattartó REST API
+# Kapcsolattartó REST API
 
 Az alábbi API kapcsolattartók kezelésére létrehozott REST szolgáltatást nyújt. Az adatok PostgreSQL adatbázisban 
 vannak elmentve és kezelve. Az API az adott szerkezetű és összetételű adatokkal operál:
@@ -31,7 +31,7 @@ Az API különböző végpontokkal rendelkezik, melyek az alábbi eseteket fedik
 
 
 
-Listázás végpont
+## Listázás végpont
 
 A végpont az alábbi URL-lel érhető el:
 /contacts/list?pageNo=0&pageSize=10
@@ -46,7 +46,7 @@ Minden listaelem a következő adatokat adja vissza: id, lastName, firstName, em
 
 
 
-Részletezése végpont
+## Részletezése végpont
 
 A végpont az alábbi URL-lel érhető el:
 /contacts/details?id=8
@@ -59,7 +59,7 @@ dateCreation, dateLastModify, company(id, name)
 
 
 
-Létrehozás végpont
+## Létrehozás végpont
 
 A végpont az alábbi URL-lel érhető el:
 /contacts/save
@@ -75,7 +75,7 @@ Opcionálisan tartalmazhatja még az alábbiakat: phone, note
 
 
 
-Módosítás végpont
+## Módosítás végpont
 
 A végpont az alábbi URL-lel érhető el:
 /contacts/update
@@ -89,7 +89,7 @@ Opcionálisan tartalmazhatja még az alábbiakat: phone, note
 
 
 
-Törlés végpont
+## Törlés végpont
 
 A végpont az alábbi URL-lel érhető el:
 /contacts/delete
