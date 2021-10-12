@@ -18,6 +18,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.EnumUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,13 +131,14 @@ public class ContactService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid company (CODE 403)\n");
         }
 
-        // Checking status
+        // Checking status - not necessary, because request throws bad request response with status code 400 if Status enum does not contain contactDTO.getStatus()
         Status status = contactDTO.getStatus();
         if (status != null && !EnumUtils.isValidEnum(Status.class, status.name())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid status (CODE 403)\n");
         }
         
-        //JSoup.parse();
+        // Cleaning note from HTML
+        String cleanNote = Jsoup.clean(contactDTO.getNote(), Whitelist.none());
 
         contact.setLastName(contactDTO.getLastName());
         contact.setFirstName(contactDTO.getFirstName());
@@ -146,7 +149,7 @@ public class ContactService {
         contact.setCompanyId(company);
         contact.setStatus(Status.ACTIVE);
         contact.setPhone(contactDTO.getPhone());
-        contact.setNote(contactDTO.getNote());
+        contact.setNote(cleanNote);
         contact.setDateCreation(LocalDateTime.now());
         contact.setDateLastModify(LocalDateTime.now());
 
