@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,7 +37,6 @@ public class ContactController {
         } catch (Exception ex) {
             throw ex;
         }
-
     }
 
     @GetMapping(path = "/details")
@@ -50,9 +50,24 @@ public class ContactController {
     @PostMapping(path = "/save", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveContact(@RequestBody ContactDTO contactDTO) {
         logger.info("Saving new contact start");
-        ResponseEntity<String> answer = contactService.saveContact(contactDTO);
+        ResponseEntity<String> answer = contactService.updateOrSaveContact(contactDTO);
         logger.info(answer.toString());
         return answer;
+    }
 
+    @PutMapping(path = "/update")
+    public ResponseEntity<String> updateContact(@RequestBody ContactDTO contactDTO) {
+        logger.info("Updating contact start");
+        ResponseEntity<String> answer = contactService.updateOrSaveContact(contactDTO);
+        logger.info(answer.toString());
+        return answer;
+    }
+    
+    @PutMapping(path = "/delete")
+    public ResponseEntity<String> deleteContact(@RequestBody ContactDTO contactDTO) {
+        logger.info("Deleting contact start");
+        ResponseEntity<String> answer = contactService.deleteContact(contactDTO);
+        logger.info(answer.toString());
+        return answer;
     }
 }

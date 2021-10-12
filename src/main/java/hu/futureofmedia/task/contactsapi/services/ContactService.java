@@ -90,8 +90,8 @@ public class ContactService {
         return ctDTO;
     }
 
-    public ResponseEntity<String> saveContact(ContactDTO contactDTO) {
-        Contact contact = new Contact();
+    public ResponseEntity<String> validateContactData(ContactDTO contactDTO) {
+        logger.info("Checking data validity for saving contact");
         // Checking empty values
         if (null == contactDTO.getLastName() || null == contactDTO.getFirstName() || null == contactDTO.getEmail()
                 || null == contactDTO.getCompany() || null == contactDTO.getCompany().getId() || null == contactDTO.getCompany().getName()) {
@@ -136,10 +136,15 @@ public class ContactService {
         if (status != null && !EnumUtils.isValidEnum(Status.class, status.name())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid status (CODE 403)\n");
         }
-        
-        // Cleaning note from HTML
-        String cleanNote = Jsoup.clean(contactDTO.getNote(), Whitelist.none());
 
+        // Cleaning note from HTML
+        contactDTO.setNote(Jsoup.clean(contactDTO.getNote(), Whitelist.none()));
+        logger.info("Data are valid.");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Data are valid (CODE 202)\n");
+    }
+
+    public Contact convertContactFromContactDTO(ContactDTO contactDTO, Status status) {
+        Contact contact = new Contact();
         contact.setLastName(contactDTO.getLastName());
         contact.setFirstName(contactDTO.getFirstName());
         contact.setEmail(contactDTO.getEmail());
@@ -147,13 +152,65 @@ public class ContactService {
         company.setId(contactDTO.getCompany().getId());
         company.setName(contactDTO.getCompany().getName());
         contact.setCompanyId(company);
-        contact.setStatus(Status.ACTIVE);
+        contact.setStatus(status);
         contact.setPhone(contactDTO.getPhone());
-        contact.setNote(cleanNote);
+        contact.setNote(contactDTO.getNote());
         contact.setDateCreation(LocalDateTime.now());
         contact.setDateLastModify(LocalDateTime.now());
+        return contact;
+    }
 
+//    public ResponseEntity<String> saveContact(ContactDTO contactDTO) {
+//        ResponseEntity<String> response = validateContactData(contactDTO);
+//        if (response.getStatusCodeValue() != 202) {
+//            logger.info("Data are invalid.");
+//            return response;
+//        }
+//
+//        logger.info("Saving new contact to db starts now.");
+//        Contact contact = convertContactFromContactDTO(contactDTO, Status.ACTIVE);
+//
+//        contactRepository.save(contact);
+//
+//        logger.info("New contact has been created.");
+//        return ResponseEntity.status(HttpStatus.CREATED).body("New contact has been created (CODE 201)\n");
+//    }
+    public ResponseEntity<String> updateOrSaveContact(ContactDTO contactDTO) {
+        Contact contact = new Contact();
+
+        ResponseEntity<String> response = validateContactData(contactDTO);
+        if (response.getStatusCodeValue() != 202) {
+            logger.info("Data are invalid.");
+            return response;
+        }
+
+//        try {
+//            Optional<Contact> result = contactRepository.findById(contactDTO.getId());
+//            contact = result.orElse(null);
+//        } catch (IllegalArgumentException ex) {
+//            logger.info("There is no such contact in db.");
+//        }
+        contact = convertContactFromContactDTO(contactDTO, Status.ACTIVE);
+        if (contactDTO.getId() == null) {
+            logger.info("Saving new contact to db starts now.");
+        } else {
+            contact.setId(contactDTO.getId());
+            logger.info("Updating contact with id = " + contactDTO.getId() + " to db starts now.");
+        }
         contactRepository.save(contact);
-        return ResponseEntity.status(HttpStatus.CREATED).body("New contact has been created (CODE 201)\n");
+
+        logger.info("Contact has been created/updated.");
+        return ResponseEntity.status(HttpStatus.OK).body("Contact has been created/updated (CODE 200)\n");
+    }
+
+    public ResponseEntity<String> deleteContact(ContactDTO contactDTO) {
+        if (contactDTO.getId() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contact has been not found (CODE 404)\n");
+        } else {
+            Contact contact = convertContactFromContactDTO(contactDTO, Status.DELETED);
+            contact.setId(contactDTO.getId());
+            contactRepository.save(contact);
+            return ResponseEntity.status(HttpStatus.RESET_CONTENT).body("Contact has been deleted (CODE 205)\n");
+        }
     }
 }
