@@ -44,10 +44,6 @@ public class ContactService {
     public List<ContactDTO> getContactList(Integer pageNo, Integer pageSize) throws Exception {
         Pageable paging = PageRequest.of(pageNo, pageSize);
         Page<Contact> pagedResult = contactRepository.findByStatusOrderByLastNameAsc(Status.ACTIVE, paging);
-//        if (pageNo >= pagedResult.getTotalPages()) {
-//            int maxPageNo = pagedResult.getTotalPages() - 1;
-//            throw new Exception("Page number has been exceeded the maximum number of pages, which is " + maxPageNo);
-//        }
         logger.info("Calling contacts.");
         List<ContactDTO> contactDTOs = new ArrayList<>();
         Iterable<Contact> contacts = pagedResult.getContent();
@@ -63,11 +59,7 @@ public class ContactService {
         Optional<Contact> result = contactRepository.findById(contactID);
         Contact contact = result.orElse(null);
         logger.info("Contact detials with id = " + contactID + " succesfully read in db.");
-        //return setContactDTO(true, contact);
-        CompanyDTO cDTO = new CompanyDTO(); // xxx ezt majd megcsinalni
-        ContactDTO ez = new ContactDTO();
-        ez.setCompany(cDTO);
-        return ez;
+        return setContactDTO(true, contact);
     }
 
     private ContactDTO setContactDTO(boolean forDetails, Contact contact) {
@@ -155,26 +147,10 @@ public class ContactService {
         contact.setStatus(status);
         contact.setPhone(contactDTO.getPhone());
         contact.setNote(contactDTO.getNote());
-        contact.setDateCreation(LocalDateTime.now());
         contact.setDateLastModify(LocalDateTime.now());
         return contact;
     }
 
-//    public ResponseEntity<String> saveContact(ContactDTO contactDTO) {
-//        ResponseEntity<String> response = validateContactData(contactDTO);
-//        if (response.getStatusCodeValue() != 202) {
-//            logger.info("Data are invalid.");
-//            return response;
-//        }
-//
-//        logger.info("Saving new contact to db starts now.");
-//        Contact contact = convertContactFromContactDTO(contactDTO, Status.ACTIVE);
-//
-//        contactRepository.save(contact);
-//
-//        logger.info("New contact has been created.");
-//        return ResponseEntity.status(HttpStatus.CREATED).body("New contact has been created (CODE 201)\n");
-//    }
     public ResponseEntity<String> updateOrSaveContact(ContactDTO contactDTO) {
         Contact contact = new Contact();
 
@@ -184,14 +160,9 @@ public class ContactService {
             return response;
         }
 
-//        try {
-//            Optional<Contact> result = contactRepository.findById(contactDTO.getId());
-//            contact = result.orElse(null);
-//        } catch (IllegalArgumentException ex) {
-//            logger.info("There is no such contact in db.");
-//        }
         contact = convertContactFromContactDTO(contactDTO, Status.ACTIVE);
         if (contactDTO.getId() == null) {
+            contact.setDateCreation(LocalDateTime.now());
             logger.info("Saving new contact to db starts now.");
         } else {
             contact.setId(contactDTO.getId());

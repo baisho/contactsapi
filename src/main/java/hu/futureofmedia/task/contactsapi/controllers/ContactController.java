@@ -40,10 +40,10 @@ public class ContactController {
     }
 
     @GetMapping(path = "/details")
-    public ContactDTO getContactDetails(@RequestParam Long contactID) {
-        logger.info("Requesting details of contact with id = " + contactID);
-        ContactDTO contactDTO = contactService.getContactDetails(contactID);
-        logger.info("Contact details with id = " + contactID + " is being sent to resquester.");
+    public ContactDTO getContactDetails(@RequestParam Long id) {
+        logger.info("Requesting details of contact with id = " + id);
+        ContactDTO contactDTO = contactService.getContactDetails(id);
+        logger.info("Contact details with id = " + id + " is being sent to resquester.");
         return contactDTO;
     }
 
