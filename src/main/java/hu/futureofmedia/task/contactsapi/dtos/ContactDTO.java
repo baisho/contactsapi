@@ -2,7 +2,7 @@ package hu.futureofmedia.task.contactsapi.dtos;
 
 import hu.futureofmedia.task.contactsapi.enums.Status;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ContactDTO implements Serializable {
 
@@ -13,8 +13,8 @@ public class ContactDTO implements Serializable {
     private String phone;
     private String note;
     private Status status;
-    private Date dateCreation;
-    private Date dateLastModify;
+    private LocalDateTime dateCreation;
+    private LocalDateTime dateLastModify;
     private CompanyDTO company;
 
     public Long getId() {
@@ -73,19 +73,19 @@ public class ContactDTO implements Serializable {
         this.status = status;
     }
 
-    public Date getDateCreation() {
+    public LocalDateTime getDateCreation() {
         return dateCreation;
     }
 
-    public void setDateCreation(Date dateCreation) {
+    public void setDateCreation(LocalDateTime dateCreation) {
         this.dateCreation = dateCreation;
     }
 
-    public Date getDateLastModify() {
+    public LocalDateTime getDateLastModify() {
         return dateLastModify;
     }
 
-    public void setDateLastModify(Date dateLastModify) {
+    public void setDateLastModify(LocalDateTime dateLastModify) {
         this.dateLastModify = dateLastModify;
     }
 

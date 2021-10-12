@@ -8,7 +8,7 @@ package hu.futureofmedia.task.contactsapi.entities;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import hu.futureofmedia.task.contactsapi.enums.Status;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,8 +22,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -81,7 +79,7 @@ public class Contact implements Serializable {
     private String note;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 2147483647)
+    //@Size(min = 1, max = 2147483647)
     @Enumerated(EnumType.STRING)
     @Column(name = "status", columnDefinition = "enum('ACTIVE', 'DELETED')")
     @Type(type = "pgsql_enum" )
@@ -89,13 +87,13 @@ public class Contact implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "date_creation")
-    @Temporal(TemporalType.DATE)
-    private Date dateCreation;
+    //@Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dateCreation;
     @Basic(optional = false)
     @NotNull
     @Column(name = "date_last_modify")
-    @Temporal(TemporalType.DATE)
-    private Date dateLastModify;
+    //@Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dateLastModify;
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Company companyId;
@@ -107,7 +105,7 @@ public class Contact implements Serializable {
         this.id = id;
     }
 
-    public Contact(Long id, String lastName, String firstName, String email, Status status, Date dateCreation, Date dateLastModify) {
+    public Contact(Long id, String lastName, String firstName, String email, Status status, LocalDateTime dateCreation, LocalDateTime dateLastModify) {
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -173,19 +171,19 @@ public class Contact implements Serializable {
         this.status = status;
     }
 
-    public Date getDateCreation() {
+    public LocalDateTime getDateCreation() {
         return dateCreation;
     }
 
-    public void setDateCreation(Date dateCreation) {
+    public void setDateCreation(LocalDateTime dateCreation) {
         this.dateCreation = dateCreation;
     }
 
-    public Date getDateLastModify() {
+    public LocalDateTime getDateLastModify() {
         return dateLastModify;
     }
 
-    public void setDateLastModify(Date dateLastModify) {
+    public void setDateLastModify(LocalDateTime dateLastModify) {
         this.dateLastModify = dateLastModify;
     }
 

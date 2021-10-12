@@ -5,5 +5,6 @@ import java.util.List;
 import org.springframework.data.repository.Repository;
 
 public interface CompanyRepository extends Repository<Company, Long> {
-    List<Company> findAll();
+    public List<Company> findAll();
+    public Company findById(Long id);
 }
