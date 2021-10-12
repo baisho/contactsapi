@@ -83,7 +83,7 @@ public class Contact implements Serializable {
     @NotNull
     @Size(min = 1, max = 2147483647)
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "status")
+    @Column(name = "status", columnDefinition = "enum('ACTIVE', 'DELETED')")
     @Type(type = "pgsql_enum" )
     private Status status;
     @Basic(optional = false)

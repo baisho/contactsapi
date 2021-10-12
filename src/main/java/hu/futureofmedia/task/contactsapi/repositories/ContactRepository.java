@@ -1,13 +1,16 @@
 package hu.futureofmedia.task.contactsapi.repositories;
 
 import hu.futureofmedia.task.contactsapi.entities.Contact;
+import hu.futureofmedia.task.contactsapi.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface ContactRepository extends PagingAndSortingRepository<Contact, Long> {
     
-    Page<Contact> findByStatus(String status, Pageable paging);
+    public Page<Contact> findByStatus(Status status, Pageable paging);
+    public Page<Contact> findByStatusOrderByLastNameAsc(Status status, Pageable paging);
+    public Contact findById(Integer id);
 
 //    List<Contact> findAllByOrderByLastNameAsc();
 //

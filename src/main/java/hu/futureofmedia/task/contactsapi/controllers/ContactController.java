@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/contact")
+@RequestMapping(path = "/contacts")
 public class ContactController {
 
     private Logger logger = LoggerFactory.getLogger(ContactController.class.getName());
@@ -23,19 +23,23 @@ public class ContactController {
     @GetMapping(path = "/list")
     public List<ContactDTO> getContactList(
             @RequestParam(defaultValue = "0") Integer pageNo,
-            @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "lastName") String sortBy) throws Exception {
-
-        System.out.println(org.hibernate.Version.getVersionString());
-
+            @RequestParam(defaultValue = "10") Integer pageSize) throws Exception {
         logger.info("Requesting contact list");
         try {
-            List<ContactDTO> contactDTOList = contactService.getContactList(pageNo, pageSize, sortBy);
+            List<ContactDTO> contactDTOList = contactService.getContactList(pageNo, pageSize);
             logger.info("Contact list is being sent to resquester.");
             return contactDTOList;
         } catch (Exception ex) {
             throw ex;
         }
 
+    }
+
+    @GetMapping(path = "/details")
+    public ContactDTO getContactDetails(@RequestParam Long contactID) {
+        logger.info("Requesting details of contact with id = " + contactID);
+        ContactDTO contactDTO = contactService.getContactDetails(contactID);
+        logger.info("Contact details with id = " + contactID + " is being sent to resquester.");
+        return contactDTO;
     }
 }
